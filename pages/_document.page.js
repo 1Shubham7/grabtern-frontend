@@ -40,6 +40,10 @@ export default function Document() {
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6172950963478417"
           crossOrigin="anonymous"
         ></script>
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
       </Head>
       <body>
         <Main />

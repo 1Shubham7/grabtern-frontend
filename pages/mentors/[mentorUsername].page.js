@@ -1,10 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 const Header = dynamic(() => import("../../components/Header"));
 import axios from "axios";
 
+
 function Index({ mentorDetail }) {
   const [showModal, setShowModal] = useState(false);
+  const [orderDetail, setOrderDetail] = useState({});
+  const { id,amount } = orderDetail;
+
+
+  const options = {
+    key: "rzp_test_3OYSLbNvYT5U0s",
+    amount:amount,
+    currency: "INR",
+    name: "Grabtern",
+    description: "Pay & Checkout this Session",
+    image:
+      "/whitelogo.png",
+    order_id: id ,
+    handler:async function (response) {
+      console.log(response);
+      const res=await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/mentors/bookSession/verifyOrder`, 
+response
+      );
+      console.log(res);
+      alert("This step of Payment Succeeded");
+    },
+    prefill: {
+      //Here we are prefilling random contact
+      contact: "9876543210",
+      //name and email id, so while checkout
+      name: "Aarib",
+      email: "sayyedaribhussain4321@gmail.com",
+    },
+    theme: {
+      color: "#2300a3",
+    },
+  };
+  const razorpayObject = new Razorpay(options);
+  console.log("razorpayObject here ",razorpayObject);
+  razorpayObject.on("payment.failed", function (response) {
+    console.log("razorpay failed response here",response);
+
+    alert("This step of Payment Failed");
+  });
+
+  const handleBookSession = async (amount, currency,e) => {
+    e.preventDefault();
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/mentors/bookSession/createOrder`,
+      {
+        amount: amount,
+        currency: currency,
+      }
+    );
+    console.log(response);
+    const { data } = response;
+    setOrderDetail(data);
+    console.log("order details here", orderDetail);
+    razorpayObject.open();
+  };
+
+  // document.getElementById('pay-button').onclick = function(e){
+  // 	razorpayObject.open();
+  // 	e.preventDefault();
+  // }
 
   return (
     <>
@@ -165,7 +226,10 @@ function Index({ mentorDetail }) {
                           {session.priceSession}
                         </div>
                       </div>
-                      <button style={{ cursor: "pointer" }}>
+                      <button
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) => handleBookSession(session.priceSession*100, "INR",e)}
+                      >
                         Book Session
                       </button>
                     </li>
@@ -187,6 +251,7 @@ export default Index;
 export const getServerSideProps = async (context) => {
   const { mentorUsername } = context.params;
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/mentors/mentorDetail/${mentorUsername}`;
+
   const { data: res } = await axios.get(url);
   if (res.message === "Invalid link") {
     return {

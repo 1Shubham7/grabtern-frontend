@@ -59,6 +59,7 @@ function Mentors({ mentorsData }) {
 export default Mentors;
 
 export const getServerSideProps = async (context) => {
+  console.log("i am here");
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/mentors/mentorLists`;
   const { data } = await axios.get(url);
 
