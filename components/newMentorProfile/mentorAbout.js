@@ -27,11 +27,6 @@ function MentorAbout({ mentorDetail, onShare }) {
             Icon={RiTwitterFill}
             variant="secondary"
           />
-          <IconLink
-            href={`mailto:${mentorDetail.email}`}
-            Icon={RiMailFill}
-            variant="secondary"
-          />
         </div>
         <div>
           <Button onClick={onShare} LeftIcon={RiShareFill} />
