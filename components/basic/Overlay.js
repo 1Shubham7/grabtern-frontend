@@ -29,8 +29,7 @@ const Overlay = ({ callbackFunction }) => {
     }, 1300);
 
     google.accounts.id.initialize({
-      client_id:
-        "1094459761-kbb3qbgafu8avkgfe9fk8f85fr5418a8.apps.googleusercontent.com",
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       callback: handleCallbackResponse,
     });
 
